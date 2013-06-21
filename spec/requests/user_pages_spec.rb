@@ -142,5 +142,23 @@ describe "User pages" do
     end
   end
   
-  
+  describe "signed in user should not have access to Users" do
+    describe '#new' do
+      let(:user) { FactoryGirl.create(:user) }
+      before do
+        sign_in user
+        visit new_user_path
+      end
+      it { should_not have_selector('title', text: 'Sign up') }
+    end
+    
+    describe "#create" do
+      let(:user) { FactoryGirl.create(:user) }
+      before do
+        sign_in user
+        post users_path
+      end
+      it { should have_selector('title', text: full_title('')) }
+    end
+  end  
 end

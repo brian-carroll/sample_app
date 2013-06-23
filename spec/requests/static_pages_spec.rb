@@ -29,10 +29,21 @@ describe "Static pages" do
         user.feed.each do |item|
           page.should have_selector("li##{item.id}", text: item.content)
         end
-      end
-    end    
+      end  # render user's feed
+
+      it "should render the micropost count" do
+        mp = user.microposts.count()
+        if (mp==0 || mp>1)
+          txt = "#{mp} microposts"
+        else
+          txt = "1 micropost"
+        end
+        page.should have_selector("span", text: txt)
+      end  # render micropost count
+      
+    end   # signed-in users 
     
-  end
+  end # Home page
   
   describe "Help page" do
     before { visit help_path }

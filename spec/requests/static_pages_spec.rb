@@ -25,21 +25,23 @@ describe "Static pages" do
         visit root_path
       end
 
+
       it "should render the user's feed" do
         user.feed.each do |item|
           page.should have_selector("li##{item.id}", text: item.content)
         end
-      end  # render user's feed
+      end
 
-      it "should render the micropost count" do
-        mp = user.microposts.count()
-        if (mp==0 || mp>1)
-          txt = "#{mp} microposts"
-        else
-          txt = "1 micropost"
+      describe "follower/following counts" do
+        let(:other_user) { FactoryGirl.create(:user) }
+        before do
+          other_user.follow!(user)
+          visit root_path
         end
-        page.should have_selector("span", text: txt)
-      end  # render micropost count
+
+        it { should have_link("0 following", href: following_user_path(user)) }
+        it { should have_link("1 followers", href: followers_user_path(user)) }
+      end
       
     end   # signed-in users 
     
